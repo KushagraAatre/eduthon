@@ -28,7 +28,8 @@ streamlit run chatbot.py
 
 🔊 Run ReadAloud
 streamlit run readaloud1.py
-🛠️ Notes
-These apps are still under active development.
 
+
+🛠️ Note
+These apps are still under active development.
 You might encounter some errors or bugs.
