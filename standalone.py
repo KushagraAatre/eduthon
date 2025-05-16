@@ -122,7 +122,7 @@ def extract_text_from_pdf(pdf_file_bytes: bytes) -> str:
         if 'progress_bar' in locals(): progress_bar.empty()
     return "\n\n<page_break>\n\n".join(full_extracted_text).strip()
 
-def js_string_escape_ra(s: str) -> str: # Renamed to avoid conflict if chatbot.py had one
+def js_string_escape_ra(s: str) -> str:
     if not s: return ""
     return (
         s.replace("\\", "\\\\")
@@ -198,8 +198,8 @@ def read_aloud_tab():
     if "ra_manual_text_input" not in st.session_state: st.session_state.ra_manual_text_input = ""
     if "ra_image_extracted_text" not in st.session_state: st.session_state.ra_image_extracted_text = ""
     if "ra_pdf_extracted_text" not in st.session_state: st.session_state.ra_pdf_extracted_text = ""
-    if "ra_last_uploaded_image_id" not in st.session_state: st.session_state.ra_last_uploaded_image_id = None
-    if "ra_last_uploaded_pdf_id" not in st.session_state: st.session_state.ra_last_uploaded_pdf_id = None
+    if "ra_last_uploaded_image_file_id" not in st.session_state: st.session_state.ra_last_uploaded_image_file_id = None
+    if "ra_last_uploaded_pdf_file_id" not in st.session_state: st.session_state.ra_last_uploaded_pdf_file_id = None
 
     col1, col2 = st.columns([1, 2])
 
@@ -213,14 +213,14 @@ def read_aloud_tab():
         uploaded_image_file = st.file_uploader(
             "Choose an image...", type=["jpg", "jpeg", "png"], key="ra_image_uploader"
         )
-        if uploaded_image_file is not None and uploaded_image_file.id != st.session_state.get("ra_last_uploaded_image_id"):
+        if uploaded_image_file is not None and uploaded_image_file.file_id != st.session_state.get("ra_last_uploaded_image_file_id"):
             with st.spinner("Extracting text from image..."):
                 try:
                     pil_image = Image.open(uploaded_image_file)
                     st.session_state.ra_image_extracted_text = perform_ocr(pil_image)
                     st.session_state.ra_pdf_extracted_text = "" # Clear other sources
-                    st.session_state.ra_last_uploaded_image_id = uploaded_image_file.id
-                    st.session_state.ra_last_uploaded_pdf_id = None
+                    st.session_state.ra_last_uploaded_image_file_id = uploaded_image_file.file_id
+                    st.session_state.ra_last_uploaded_pdf_file_id = None
                     st.success("Image text extracted!")
                 except UnidentifiedImageError: st.error("Not a valid image file.")
                 except Exception as e: st.error(f"Error processing image: {e}")
@@ -229,19 +229,20 @@ def read_aloud_tab():
         uploaded_pdf_file = st.file_uploader(
             "Choose a PDF...", type=["pdf"], key="ra_pdf_uploader"
         )
-        if uploaded_pdf_file is not None and uploaded_pdf_file.id != st.session_state.get("ra_last_uploaded_pdf_id"):
+        if uploaded_pdf_file is not None and uploaded_pdf_file.file_id != st.session_state.get("ra_last_uploaded_pdf_file_id"):
             st.session_state.ra_pdf_extracted_text = extract_text_from_pdf(uploaded_pdf_file.getvalue())
             st.session_state.ra_image_extracted_text = "" # Clear other sources
-            st.session_state.ra_last_uploaded_pdf_id = uploaded_pdf_file.id
+            st.session_state.ra_last_uploaded_pdf_file_id = uploaded_pdf_file.file_id
             st.session_state.ra_last_uploaded_image_id = None
             st.success("PDF text extracted!")
 
         if st.button("Clear All Inputs", key="ra_clear_all"):
+            st.toast("Clear All Inputs button was clicked! Attempting to clear...", icon="🧹") # Debug toast
             st.session_state.ra_manual_text_input = ""
             st.session_state.ra_image_extracted_text = ""
             st.session_state.ra_pdf_extracted_text = ""
-            st.session_state.ra_last_uploaded_image_id = None
-            st.session_state.ra_last_uploaded_pdf_id = None
+            st.session_state.ra_last_uploaded_image_file_id = None
+            st.session_state.ra_last_uploaded_pdf_file_id = None
             st.rerun()
     
     with col2:
