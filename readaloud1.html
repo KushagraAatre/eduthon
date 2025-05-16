@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Unsplash Hover Preview and Text-to-Speech</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             background-color: rgb(17,14,23);
             color: white;
-            font-family: Arial, sans-serif;
+            font-family: 'Lexend', sans-serif;
             padding: 20px;
         }
         .highlight {
@@ -42,7 +43,7 @@
     <p id="text-content">{{ text_content }}</p>
     <div id="image-preview"></div>
 
-    <textarea id="text-input" rows="5" cols="50" placeholder="Enter text here...">{{ text_content }}</textarea><br>
+    <textarea id="text-input" rows="5" cols="50" placeholder="Enter text here..." style="font-family: 'Lexend', sans-serif;">{{ text_content }}</textarea><br>
     <button id="read-button">Read Text</button>
 
     <script>
@@ -91,7 +92,7 @@
 
                 currentWordIndex = index;
                 let highlightedText = words.map((word, i) => {
-                    return i === index ? `<span class="highlight hover-word">${word}</span>` : word;
+                    return i === index ? `<span class="highlight hover-word" style="font-family: 'Lexend', sans-serif;">${word}</span>` : `<span class="hover-word" style="font-family: 'Lexend', sans-serif;">${word}</span>`;
                 }).join(" ");
                 
                 outputElement.innerHTML = highlightedText;
@@ -111,10 +112,10 @@
             highlightAndSpeak(0);
         }
 
-        // Initialize the text content
-        const textContent = document.getElementById('text-content');
-        const words = textContent.innerText.split(' ');
-        textContent.innerHTML = words.map(word => `<span class="hover-word">${word}</span>`).join(' ');
+        // Initialize the text content and apply font to initially processed words
+        const textContentElement = document.getElementById('text-content');
+        const initialWords = textContentElement.innerText.split(' ');
+        textContentElement.innerHTML = initialWords.map(word => `<span class="hover-word" style="font-family: 'Lexend', sans-serif;">${word}</span>`).join(' ');
 
         document.querySelectorAll('.hover-word').forEach(word => {
             word.addEventListener('mouseover', handleMouseOver);

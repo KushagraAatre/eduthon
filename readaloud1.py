@@ -5,6 +5,21 @@ import fitz  # PyMuPDF
 import io
 from typing import Optional, List, Tuple, Any
 
+# --- Page Configuration (Must be the first Streamlit command) ---
+st.set_page_config(page_title="Reading Assistance Pro", layout="wide", initial_sidebar_state="expanded")
+
+# --- Inject Custom CSS for Lexend font for the entire Streamlit app ---
+st.markdown("""
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    /* Apply Lexend to the main Streamlit app elements */
+    html, body, [class*="st-"], .stApp, .stButton>button, .stTextArea textarea, .stTextInput input, .stFileUploader label, .stSelectbox div[data-baseweb="select"] > div, .stAlert, .stMarkdown, .stExpander header, h1, h2, h3, h4, h5, h6, p, div, span, li, label, button, input, select, textarea {
+        font-family: 'Lexend', sans-serif !important;
+    }
+</style>
+""", unsafe_allow_html=True)
+# --- End Custom CSS Injection ---
+
 # --- Configuration & Initialization ---
 
 # Initialize the OCR reader (can be slow, so do it once globally)
@@ -149,8 +164,6 @@ def display_tts_player(text_content: str, access_key: str):
 
 # --- Main Application ---
 def main():
-    st.set_page_config(page_title="Reading Assistance Pro", layout="wide", initial_sidebar_state="expanded")
-    
     st.sidebar.title("📖 Reading Assistance Pro")
     st.sidebar.markdown("---")
 
